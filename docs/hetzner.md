@@ -42,7 +42,7 @@ Example configuration file:
     
     "sshKey":{
         "fingerprint": "",
-        "path": "",
+        "path": ""
     },
 
     "imageSizeMapping": [
