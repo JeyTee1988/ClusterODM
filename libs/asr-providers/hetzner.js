@@ -30,7 +30,8 @@ module.exports = class HetznerAsrProvider extends AbstractASRProvider{
                 "accessKey": "CHANGEME!",
                 "secretKey": "CHANGEME!",
                 "endpoint": "CHANGEME!",
-                "bucket": "CHANGEME!"
+                "bucket": "CHANGEME!",
+                "acl": "public-read"
             },
 
             "maxRuntime": -1,
@@ -59,11 +60,11 @@ module.exports = class HetznerAsrProvider extends AbstractASRProvider{
     }
 
     async initialize(){
-        this.validateConfigKeys(["apiToken", "image", "s3.accessKey", "s3.secretKey", "s3.endpoint", "s3.bucket"]);
+        this.validateConfigKeys(["apiToken", "image", "s3.accessKey", "s3.secretKey", "s3.endpoint", "s3.bucket", "s3.acl"]);
 
         // Test S3
-        const { accessKey, secretKey, endpoint, bucket } = this.getConfig("s3");
-        await S3.testBucket(accessKey, secretKey, endpoint, bucket, null);
+        const { accessKey, secretKey, endpoint, bucket, acl } = this.getConfig("s3");
+        await S3.testBucket(accessKey, secretKey, endpoint, bucket, acl);
 
         const im = this.getConfig("imageSizeMapping", []);
         if (!Array.isArray(im)) throw new Error("Invalid config key imageSizeMapping (array expected)");
@@ -182,6 +183,7 @@ module.exports = class HetznerAsrProvider extends AbstractASRProvider{
                      `--s3_secret_key ${s3.secretKey}`,
                      `--s3_endpoint ${s3.endpoint}`,
                      `--s3_bucket ${s3.bucket}`,
+                     `--s3_acl ${s3.acl}`,
                      `--webhook ${webhook}`,
                      `--token ${nodeToken}`].join(" "));
     }

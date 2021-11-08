@@ -28,7 +28,8 @@ Example configuration file:
         "accessKey": "CHANGEME!",
         "secretKey": "CHANGEME!",
         "endpoint": "CHANGEME!",
-        "bucket": "CHANGEME!"
+        "bucket": "CHANGEME!",
+        "acl": "public-read"
     },
 
     "maxRuntime": -1,
@@ -66,4 +67,3 @@ Example configuration file:
 | minImages                | Minimum number of images that a dataset needs to have for the autoscaler to be used (-1 = no minimum).                                                                                                                                                                                                              |
 | addSwap                  | Optionally add this much swap space to the machine as a factor of total RAM (`RAM * addSwap`). A value of `1` sets a swapfile equal to the available RAM.                                                                                                                                                         |
 | dockerImage              | Docker image to launch                                                                                                                                                                                                                                                                                            |
-
