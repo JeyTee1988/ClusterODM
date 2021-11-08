@@ -121,6 +121,7 @@ module.exports = class AWSAsrProvider extends AbstractASRProvider{
                      `--s3_secret_key ${secretKey}`,
                      `--s3_endpoint ${s3.endpoint}`,
                      `--s3_bucket ${s3.bucket}`,
+                     `--s3_acl private`,
                      `--webhook ${webhook}`,
                      `--token ${nodeToken}`].join(" "));
     }
