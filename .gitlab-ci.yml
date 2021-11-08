@@ -7,10 +7,8 @@ stages:
   stage: build
   image: docker:20.10.7@sha256:63cb2df6dfe1fb041b952ddb9f75c69569331fa39577bc41a3e56cf8f79f7e2e
 
-  # Job läuft nur auf dem master-Branch und wenn benötigte Variablen da sind
+  # Job läuft nur wenn benötigte Variablen da sind
   only:
-    refs:
-      - master
     variables:
       - $BUILD_CONTEXT
       - $IMAGE_SUFFIX
