@@ -1,0 +1,45 @@
+stages:
+  - build
+
+### Build-Stage
+
+.build-docker-template:
+  stage: build
+  image: docker:20.10.7@sha256:63cb2df6dfe1fb041b952ddb9f75c69569331fa39577bc41a3e56cf8f79f7e2e
+
+  # Job läuft nur auf dem master-Branch und wenn benötigte Variablen da sind
+  only:
+    refs:
+      - master
+    variables:
+      - $BUILD_CONTEXT
+      - $IMAGE_SUFFIX
+      - $DOCKER_TAG
+
+  # Service-Container "docker" mit Docker-in-Docker (DinD). Fungiert als isolierter Docker-Host
+  services:
+    - docker:20.10.7-dind@sha256:a5b401c7baadaa320d68336f47eaddc57cd479dbcb41ed65ab5ef89d446a3e36
+
+  # Konfiguriert Docker-Client gegen den Service-Container "docker" mit Docker-in-Docker
+  variables:
+    DOCKER_HOST: tcp://docker:2375/
+    DOCKER_DRIVER: overlay2
+    DOCKER_TLS_CERTDIR: ""
+
+  script:
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+
+    - FULL_IMAGE_NAME="$CI_REGISTRY_IMAGE/$IMAGE_SUFFIX:$DOCKER_TAG"
+
+    # Nutzt bisheriges Image als Cache, falls vorhanden
+    - docker pull $FULL_IMAGE_NAME || true
+
+    - docker build $OPTIONAL_BUILD_ARGS --cache-from $FULL_IMAGE_NAME --tag $FULL_IMAGE_NAME $BUILD_CONTEXT
+    - docker push $FULL_IMAGE_NAME
+
+build-weather/clusterodm:
+  extends: .build-docker-template
+  variables:
+    BUILD_CONTEXT: .
+    IMAGE_SUFFIX: clusterodm
+    DOCKER_TAG: v1.5.3-acl-configurable
