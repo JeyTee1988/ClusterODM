@@ -37,7 +37,7 @@ module.exports = class ScalewayAsrProvider extends AbstractASRProvider{
             "machinesLimit": -1,
             "createRetries": 1,
             "region": "par1",
-            
+
             "image": "ubuntu-xenial",
 
             "imageSizeMapping": [
@@ -56,8 +56,8 @@ module.exports = class ScalewayAsrProvider extends AbstractASRProvider{
 
         // Test S3
         const { accessKey, secretKey, endpoint, bucket } = this.getConfig("s3");
-        await S3.testBucket(accessKey, secretKey, endpoint, bucket);
-        
+        await S3.testBucket(accessKey, secretKey, endpoint, bucket, null);
+
         const im = this.getConfig("imageSizeMapping", []);
         if (!Array.isArray(im)) throw new Error("Invalid config key imageSizeMapping (array expected)");
 
@@ -80,7 +80,7 @@ module.exports = class ScalewayAsrProvider extends AbstractASRProvider{
     getCreateRetries(){
         return this.getConfig("createRetries", 1);
     }
-    
+
     getDownloadsBaseUrl(){
         return `https://${this.getConfig("s3.bucket")}.${this.getConfig("s3.endpoint")}`;
     }
@@ -88,7 +88,7 @@ module.exports = class ScalewayAsrProvider extends AbstractASRProvider{
     canHandle(imagesCount){
         const minImages = this.getConfig("minImages", -1);
 
-        return this.getImageSlugFor(imagesCount) !== null && 
+        return this.getImageSlugFor(imagesCount) !== null &&
                (minImages === -1 || imagesCount >= minImages);
     }
 

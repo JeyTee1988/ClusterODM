@@ -28,7 +28,8 @@ module.exports = class AWSAsrProvider extends AbstractASRProvider{
             "secretKey": "CHANGEME!",
             "s3":{
                 "endpoint": "CHANGEME!",
-                "bucket": "CHANGEME!"
+                "bucket": "CHANGEME!",
+                "acl": "public-read"
             },
 
             "securityGroup": "CHANGEME!",
@@ -52,12 +53,12 @@ module.exports = class AWSAsrProvider extends AbstractASRProvider{
     }
 
     async initialize(){
-        this.validateConfigKeys(["accessKey", "secretKey", "s3.endpoint", "s3.bucket", "securityGroup"]);
+        this.validateConfigKeys(["accessKey", "secretKey", "s3.endpoint", "s3.bucket", "s3.acl", "securityGroup"]);
 
         // Test S3
-        const { endpoint, bucket } = this.getConfig("s3");
-        await S3.testBucket(this.getConfig("accessKey"), this.getConfig("secretKey"), endpoint, bucket);
-        
+        const { endpoint, bucket, acl } = this.getConfig("s3");
+        await S3.testBucket(this.getConfig("accessKey"), this.getConfig("secretKey"), endpoint, bucket, acl);
+
         const im = this.getConfig("imageSizeMapping", []);
         if (!Array.isArray(im)) throw new Error("Invalid config key imageSizeMapping (array expected)");
 
@@ -88,7 +89,7 @@ module.exports = class AWSAsrProvider extends AbstractASRProvider{
     getCreateRetries(){
         return this.getConfig("createRetries", 1);
     }
-    
+
     getDownloadsBaseUrl(){
         return `https://${this.getConfig("s3.bucket")}.${this.getConfig("s3.endpoint")}`;
     }
@@ -121,7 +122,7 @@ module.exports = class AWSAsrProvider extends AbstractASRProvider{
                      `--s3_secret_key ${secretKey}`,
                      `--s3_endpoint ${s3.endpoint}`,
                      `--s3_bucket ${s3.bucket}`,
-                     `--s3_acl private`,
+                     `--s3_acl ${s3.acl}`,
                      `--webhook ${webhook}`,
                      `--token ${nodeToken}`].join(" "));
     }

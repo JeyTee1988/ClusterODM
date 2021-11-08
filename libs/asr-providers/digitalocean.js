@@ -40,7 +40,7 @@ module.exports = class DigitalOceanAsrProvider extends AbstractASRProvider{
             "region": "nyc3",
             "monitoring": true,
             "tags": ["clusterodm"],
-            
+
             "image": "ubuntu-16-04-x64",
             "snapshot": false,
 
@@ -65,8 +65,8 @@ module.exports = class DigitalOceanAsrProvider extends AbstractASRProvider{
 
         // Test S3
         const { accessKey, secretKey, endpoint, bucket } = this.getConfig("s3");
-        await S3.testBucket(accessKey, secretKey, endpoint, bucket);
-        
+        await S3.testBucket(accessKey, secretKey, endpoint, bucket, null);
+
         const im = this.getConfig("imageSizeMapping", []);
         if (!Array.isArray(im)) throw new Error("Invalid config key imageSizeMapping (array expected)");
 
@@ -97,7 +97,7 @@ module.exports = class DigitalOceanAsrProvider extends AbstractASRProvider{
     getCreateRetries(){
         return this.getConfig("createRetries", 1);
     }
-    
+
     getDownloadsBaseUrl(){
         return `https://${this.getConfig("s3.bucket")}.${this.getConfig("s3.endpoint")}`;
     }
@@ -105,7 +105,7 @@ module.exports = class DigitalOceanAsrProvider extends AbstractASRProvider{
     canHandle(imagesCount){
         const minImages = this.getConfig("minImages", -1);
 
-        return this.getImageSlugFor(imagesCount) !== null && 
+        return this.getImageSlugFor(imagesCount) !== null &&
                (minImages === -1 || imagesCount >= minImages);
     }
 
@@ -164,7 +164,7 @@ module.exports = class DigitalOceanAsrProvider extends AbstractASRProvider{
 
         if (this.getConfig("snapshot")){
             // We need to fetch the imageID
-            const response = await axios.get("https://api.digitalocean.com/v2/images?page=1&per_page=9999999&private=true", { 
+            const response = await axios.get("https://api.digitalocean.com/v2/images?page=1&per_page=9999999&private=true", {
                 timeout: 10000,
                 headers: {
                     Authorization: `Bearer ${this.getConfig("accessToken")}`

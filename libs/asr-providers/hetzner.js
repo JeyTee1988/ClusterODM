@@ -38,7 +38,7 @@ module.exports = class HetznerAsrProvider extends AbstractASRProvider{
             "machinesLimit": -1,
             "createRetries": 1,
             "location": "fsn1",
-            
+
             "image": "ubuntu-18.04",
             "snapshot": false,
 
@@ -63,8 +63,8 @@ module.exports = class HetznerAsrProvider extends AbstractASRProvider{
 
         // Test S3
         const { accessKey, secretKey, endpoint, bucket } = this.getConfig("s3");
-        await S3.testBucket(accessKey, secretKey, endpoint, bucket);
-        
+        await S3.testBucket(accessKey, secretKey, endpoint, bucket, null);
+
         const im = this.getConfig("imageSizeMapping", []);
         if (!Array.isArray(im)) throw new Error("Invalid config key imageSizeMapping (array expected)");
 
@@ -97,7 +97,7 @@ module.exports = class HetznerAsrProvider extends AbstractASRProvider{
     getCreateRetries(){
         return this.getConfig("createRetries", 1);
     }
-    
+
     getDownloadsBaseUrl(){
         return `https://${this.getConfig("s3.bucket")}.${this.getConfig("s3.endpoint")}`;
     }
@@ -105,7 +105,7 @@ module.exports = class HetznerAsrProvider extends AbstractASRProvider{
     canHandle(imagesCount){
         const minImages = this.getConfig("minImages", -1);
 
-        return this.getImageSlugFor(imagesCount) !== null && 
+        return this.getImageSlugFor(imagesCount) !== null &&
                (minImages === -1 || imagesCount >= minImages);
     }
 
@@ -115,7 +115,7 @@ module.exports = class HetznerAsrProvider extends AbstractASRProvider{
         if (this.fpCache[fingerprint]) return this.fpCache[fingerprint];
 
         // We need to fetch the ssh key ID
-        const response = await axios.get(`https://api.hetzner.cloud/v1/ssh_keys?page=1&per_page=9999999&fingerprint=${encodeURIComponent(fingerprint)}`, { 
+        const response = await axios.get(`https://api.hetzner.cloud/v1/ssh_keys?page=1&per_page=9999999&fingerprint=${encodeURIComponent(fingerprint)}`, {
             timeout: 10000,
             headers: {
                 Authorization: `Bearer ${this.getConfig("apiToken")}`
@@ -140,7 +140,7 @@ module.exports = class HetznerAsrProvider extends AbstractASRProvider{
         let imageName = this.getConfig("image");
 
         // We need to fetch the imageID
-        const response = await axios.get("https://api.hetzner.cloud/v1/images?type=snapshot&description=nodeodm-image&page=1&per_page=9999999", { 
+        const response = await axios.get("https://api.hetzner.cloud/v1/images?type=snapshot&description=nodeodm-image&page=1&per_page=9999999", {
             timeout: 10000,
             headers: {
                 Authorization: `Bearer ${this.getConfig("apiToken")}`

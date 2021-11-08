@@ -20,7 +20,7 @@ const AWS = require('aws-sdk');
 const logger = require('./logger');
 
 module.exports = {
-    testBucket: async function(accessKey, secretKey, endpoint, bucket){
+    testBucket: async function(accessKey, secretKey, endpoint, bucket, acl){
         return new Promise((resolve, reject) => {
             const spacesEndpoint = new AWS.Endpoint(endpoint);
             const s3 = new AWS.S3({
@@ -34,7 +34,8 @@ module.exports = {
             s3.putObject({
                 Bucket: bucket,
                 Key: 'test.txt',
-                Body: ''
+                Body: '',
+                ACL: acl
             }, err => {
                 if (!err){
                     logger.info("Can write to S3");

@@ -28,7 +28,8 @@ the on-demand instance cost - you'll always pay the current market price, not yo
     "secretKey": "CHANGEME!",
     "s3":{
         "endpoint": "s3.us-west-2.amazonaws.com",
-        "bucket": "bucketname"
+        "bucket": "bucketname",
+        "acl": "public-read"
     },
     "securityGroup": "CHANGEME!",
 
@@ -62,7 +63,7 @@ the on-demand instance cost - you'll always pay the current market price, not yo
 |------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | accessKey        | AWS Access Key                                                                                                                                             |
 | secretKey        | AWS Secret Key                                                                                                                                             |
-| s3               | S3 bucket configuration. Note that the bucket should *not* be configured to block public access.                                                           |
+| s3               | S3 bucket configuration
 | securityGroup    | AWS Security Group name (not ID). Must exist and allow incoming connections from your ClusterODM host on port TCP/3000.                                    |
 | createRetries    | Number of attempts to create a droplet before giving up. Defaults to 1.
 | maxRuntime       | Maximum number of seconds an instance is allowed to run ever. Set to -1 for no limit.                                                                      |
