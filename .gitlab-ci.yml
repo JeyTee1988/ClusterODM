@@ -36,7 +36,7 @@ stages:
     - docker build $OPTIONAL_BUILD_ARGS --cache-from $FULL_IMAGE_NAME --tag $FULL_IMAGE_NAME -f $DOCKERFILE $BUILD_CONTEXT
     - docker push $FULL_IMAGE_NAME
 
-build-weather/clusterodm:
+build-clusterodm:
   extends: .build-docker-template
   variables:
     BUILD_CONTEXT: .
