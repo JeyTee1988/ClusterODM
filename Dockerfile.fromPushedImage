@@ -1,0 +1,8 @@
+# Latest amd64 version. Docker Hub timestamp: Jun 7, 2021 at 2:13 pm
+# We start from this pushed image instead of building from scratch, because the latter for some reason
+# introduces a bug with failing image uploads
+FROM opendronemap/clusterodm:latest@sha256:853bb05b29abfd2125b58e5a3f978f491437c300bb1933fc142576cb519a1b2c
+
+# Patch changed code files
+COPY libs/asr-providers/ libs/asr-providers/
+COPY libs/S3.js libs/S3.js

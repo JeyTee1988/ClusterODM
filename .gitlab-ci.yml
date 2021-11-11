@@ -7,10 +7,11 @@ stages:
   stage: build
   image: docker:20.10.7@sha256:63cb2df6dfe1fb041b952ddb9f75c69569331fa39577bc41a3e56cf8f79f7e2e
 
-  # Job läuft nur wenn benötigte Variablen da sind
+  # Job läuft nur, wenn benötigte Variablen da sind
   only:
     variables:
       - $BUILD_CONTEXT
+      - $DOCKERFILE
       - $IMAGE_SUFFIX
       - $DOCKER_TAG
 
@@ -32,12 +33,13 @@ stages:
     # Nutzt bisheriges Image als Cache, falls vorhanden
     - docker pull $FULL_IMAGE_NAME || true
 
-    - docker build $OPTIONAL_BUILD_ARGS --cache-from $FULL_IMAGE_NAME --tag $FULL_IMAGE_NAME $BUILD_CONTEXT
+    - docker build $OPTIONAL_BUILD_ARGS --cache-from $FULL_IMAGE_NAME --tag $FULL_IMAGE_NAME -f $DOCKERFILE $BUILD_CONTEXT
     - docker push $FULL_IMAGE_NAME
 
 build-weather/clusterodm:
   extends: .build-docker-template
   variables:
     BUILD_CONTEXT: .
+    DOCKERFILE: Dockerfile.fromPushedImage
     IMAGE_SUFFIX: clusterodm
     DOCKER_TAG: v1.5.3-acl-configurable
