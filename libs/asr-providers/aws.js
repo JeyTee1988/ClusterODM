@@ -33,6 +33,7 @@ module.exports = class AWSAsrProvider extends AbstractASRProvider{
             },
 
             "securityGroup": "CHANGEME!",
+            "usePrivateIpAddress": false,
             "maxRuntime": -1,
             "maxUploadTime": -1,
             "instanceLimit": -1,
@@ -161,6 +162,10 @@ module.exports = class AWSAsrProvider extends AbstractASRProvider{
             "--amazonec2-root-size", image_props["storage"],
             "--amazonec2-security-group", this.getConfig("securityGroup")
         ];
+
+        if (this.getConfig("usePrivateIpAddress")) {
+            args.push("--amazonec2-use-private-address");
+        }
 
         if (this.getConfig("monitoring")) {
             args.push("--amazonec2-monitoring");
